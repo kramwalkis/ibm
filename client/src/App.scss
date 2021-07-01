@@ -6,7 +6,11 @@ $theme-colors: (
 );
 
 .App {
-    text-align: center
+    text-align: center;
+    height: 100vh;
+    overflow: scroll;
+    margin: 0;
+    padding: 0;
 }
 
 @import "~bootstrap/scss/bootstrap";

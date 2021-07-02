@@ -52,7 +52,7 @@ function SearchCont({ runClickLogic }) {
     const request = await fetch(
       `https://gnews.io/api/v4/search?q=${searchQuery}&max=9&token=f761bc3b88119973046aad53fa4bd099`
     );
-    const data = await request.json();    
+    const data = await request.json();
     runClickLogic(
       data.articles,
       {
@@ -62,18 +62,18 @@ function SearchCont({ runClickLogic }) {
     );
   }
   return (
-    <div>
+    <div className="searchCont mt-3">
       <Form.Text id="inputErrorMsg">
         Search can only contain letters and numbers and be max 40 character long
       </Form.Text>
       <InputGroup>
-        <FormControl ref={searchRef} />
-        <InputGroup.Append>
-          <Button
+        <FormControl className="rounded" ref={searchRef}/>
+        <InputGroup.Append >
+          <Button            
             onClick={() => handleClick(searchRef.current.value)}
-            variant="outline-secondary"
+            variant="primary"
           >
-            Button
+            Search
           </Button>
         </InputGroup.Append>
       </InputGroup>

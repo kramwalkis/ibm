@@ -8,9 +8,10 @@ $errorColor: red;
   overflow: scroll;
   margin: 0;
   padding: 0;
+
 }
 
 #inputErrorMsg {
-  // display: none;
+  display: none;
   color: $errorColor;
 }

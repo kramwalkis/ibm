@@ -55,12 +55,18 @@ function App() {
     return pattern.test(input.trim()) && input.length < 40 ? true : false;
   }
 
-  function showError () {
-    console.log('bad input')
+  function showError() {
+    setArticles([]);
+    document.getElementById("inputErrorMsg").style.display = "block";
   }
 
   function handleClick(input) {
-    checkInputValidity(input) ? fetchFromClick(input) : showError()
+    checkInputValidity(input) ? noErrorsOnClick(input) : showError();
+  }
+
+  function noErrorsOnClick(input) {
+    document.getElementById("inputErrorMsg").style.display = "none";
+    fetchFromClick(input);
   }
 
   function scrollLogic() {

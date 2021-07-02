@@ -1,14 +1,20 @@
 const queryDb = require("../schemas/querySchema");
 
 module.exports = {
+
   addSearchQuery: async (req, res) => {
     const queryFromFront = req.body.query;
     const query = new queryDb();
-    query.query = queryFromFront;
-    await query.save();
+    query.query = queryFromFront; //
     const test = await queryDb.find({ query: queryFromFront });
-    test.length > 0
-      ? res.send({ success: true, error: false })
-      : res.send({ success: true, error: "something went wrong" });
+    if (test.length !== 0) {
+      let increasedValue = test[0].count + 1;
+      await queryDb.updateOne(
+        { query: queryFromFront },
+        { $set: { count: increasedValue } }
+      );
+    } else {
+      await query.save();
+    }
   },
 };

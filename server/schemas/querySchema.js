@@ -5,6 +5,11 @@ const querySchema = new Schema({
     type: String,
     required: true,
   },
+  count: {
+    type: Number,
+    required: true,
+    default: 1,       
+  }
 });
 
 const query = mongoose.model("queryModel", querySchema);

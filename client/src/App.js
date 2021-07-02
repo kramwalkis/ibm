@@ -41,7 +41,7 @@ function App() {
   }
 
   return (
-    <div className="App" onScroll={scrollLogic} ref={scrollRef}>
+    <div className="App bg-light" onScroll={scrollLogic} ref={scrollRef}>
       <SearchCont runClickLogic={runClickLogic}></SearchCont>      
       <Container className="mt-3 mb-0 pb-0" fluid articles={articles}>
       <Articles articles={articles}></Articles>        

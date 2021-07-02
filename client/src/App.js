@@ -1,131 +1,50 @@
 import "./App.scss";
-import { useRef, useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import FormControl from "react-bootstrap/FormControl";
-import Form from "react-bootstrap/Form";
+import { useRef, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import InputGroup from "react-bootstrap/InputGroup";
-import Card from "react-bootstrap/Card";
+import SearchCont from "./components/SearchCont";
+import Articles from "./components/Articles"
 
-function App() {
-  const searchRef = useRef();
+function App() {  
   const scrollRef = useRef();
   const [lastArticleDate, setLastArticleDate] = useState({ date: "" });
   const [articles, setArticles] = useState([]);
-
-  useEffect(() => {
-    searchRef.current.focus();
-  }, []);
-
-  function dateConverter(date) {
-    const regularDate = new Date(date);
-    let returnDate = `${regularDate.getFullYear()}-${
-      regularDate.getMonth() + 1
-    }-${regularDate.getDate()} ${regularDate.getHours()}:${regularDate.getMinutes()}:${regularDate.getSeconds()}`;
-    return returnDate;
-  }
-
-  async function fetchFromClick(searchQuery) {
-    const request = await fetch(
-      `https://gnews.io/api/v4/search?q=${searchQuery}&max=9&token=bb9ec8144134db3ca00bcdd567945b9a`
-    );
-    const data = await request.json();
-    console.log(data);
-    setArticles([...data.articles]);
-    setLastArticleDate({
-      ...{ date: data.articles[data.articles.length - 1].publishedAt },
-    });
-  }
+  const [query, setQuery] = useState('')  
 
   async function fetchFromScroll(searchQuery, date) {
     const request = await fetch(
-      `https://gnews.io/api/v4/search?q=${searchQuery}&max=10&to=${date.date}&token=bb9ec8144134db3ca00bcdd567945b9a`
+      `https://gnews.io/api/v4/search?q=${searchQuery}&max=10&to=${date.date}&token=f761bc3b88119973046aad53fa4bd099`
     );
     const data = await request.json();
     setLastArticleDate({
       ...{ date: data.articles[data.articles.length - 1].publishedAt },
     });
     setArticles([...articles, ...data.articles.slice(1)]);
-  }
-
-  function checkInputValidity(input) {
-    const pattern = /^[\w\d\s]+$/;
-    return pattern.test(input.trim()) && input.length < 40 ? true : false;
-  }
-
-  function showError() {
-    setArticles([]);
-    document.getElementById("inputErrorMsg").style.display = "block";
-  }
-
-  function handleClick(input) {
-    checkInputValidity(input) ? noErrorsOnClick(input) : showError();
-  }
-
-  function noErrorsOnClick(input) {
-    let data = {
-      body: input,
-    };
-    fetch("/addSearchQuery", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((info) => {
-        console.log(info);
-      });
-    document.getElementById("inputErrorMsg").style.display = "none";
-    fetchFromClick(input);
-  }
-
+  }  
+    
   function scrollLogic() {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
       if (Math.floor(scrollTop) + clientHeight === scrollHeight) {
-        fetchFromScroll(searchRef.current.value, lastArticleDate);
+        fetchFromScroll(query, lastArticleDate);
       }
     }
   }
+
+  function runClickLogic(articlesArray, date, query) {
+    setQuery(query)
+    setLastArticleDate({
+      ...{ date: date },
+    });
+    articlesArray.length === 0
+      ? setArticles([]) 
+      : setArticles([...articles, ...articlesArray.slice(1)]);
+  }
+
   return (
     <div className="App" onScroll={scrollLogic} ref={scrollRef}>
-      <Form.Text id="inputErrorMsg">
-        Search can only contain letters and numbers and be max 40 character long
-      </Form.Text>
-      <InputGroup>
-        <FormControl ref={searchRef} />
-        <InputGroup.Append>
-          <Button
-            onClick={() => handleClick(searchRef.current.value)}
-            variant="outline-secondary"
-          >
-            Button
-          </Button>
-        </InputGroup.Append>
-      </InputGroup>
-      <Container className="mt-3 mb-0 pb-0" fluid>
-        <Row>
-          {articles.map((article, index) => {
-            return (
-              <Col key={index} xs={4}>
-                <Card className="m-1">
-                  <Card.Img variant="top" src={article.image} />
-                  <Card.Body>
-                    <Card.Title>{article.title}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
-                      {dateConverter(article.publishedAt)}
-                    </Card.Subtitle>
-                    <Card.Text>{article.description}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
+      <SearchCont runClickLogic={runClickLogic}></SearchCont>      
+      <Container className="mt-3 mb-0 pb-0" fluid articles={articles}>
+      <Articles articles={articles}></Articles>        
       </Container>
     </div>
   );

@@ -2,6 +2,7 @@ import "./App.scss";
 import { useRef, useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import FormControl from "react-bootstrap/FormControl";
+import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -38,30 +39,52 @@ function App() {
     });
   }
 
-  function logArticles() {
-    console.log(articles);
+  async function fetchFromScroll(searchQuery, date) {
+    const request = await fetch(
+      `https://gnews.io/api/v4/search?q=${searchQuery}&max=10&to=${date.date}&token=bb9ec8144134db3ca00bcdd567945b9a`
+    );
+    const data = await request.json();
+    setLastArticleDate({
+      ...{ date: data.articles[data.articles.length - 1].publishedAt },
+    });
+    setArticles([...articles, ...data.articles.slice(1)]);
+  }
+
+  function checkInputValidity(input) {
+    const pattern = /^[\w\d\s]+$/;
+    return pattern.test(input.trim()) && input.length < 40 ? true : false;
+  }
+
+  function showError () {
+    console.log('bad input')
+  }
+
+  function handleClick(input) {
+    checkInputValidity(input) ? fetchFromClick(input) : showError()
   }
 
   function scrollLogic() {
     if (scrollRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
       if (Math.floor(scrollTop) + clientHeight === scrollHeight) {
-        console.log("youhave reached the bottom");
+        fetchFromScroll(searchRef.current.value, lastArticleDate);
       }
     }
   }
   return (
     <div className="App" onScroll={scrollLogic} ref={scrollRef}>
+      <Form.Text id="inputErrorMsg">
+        Search can only contain letters and numbers and be max 40 character long
+      </Form.Text>
       <InputGroup>
         <FormControl ref={searchRef} />
         <InputGroup.Append>
           <Button
-            onClick={() => fetchFromClick(searchRef.current.value)}
+            onClick={() => handleClick(searchRef.current.value)}
             variant="outline-secondary"
           >
             Button
           </Button>
-          <Button onClick={logArticles}>log articles</Button>
         </InputGroup.Append>
       </InputGroup>
       <Container className="mt-3 mb-0 pb-0" fluid>

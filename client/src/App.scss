@@ -1,16 +1,16 @@
-$theme-colors: (
-    "info": tomato,
-    "danger": rgb(37, 47, 185),
-    "primary": orange,
-    "secondary": rgb(131, 131, 236)
-);
+@import "custom";
+
+$errorColor: red;
 
 .App {
-    text-align: center;
-    height: 100vh;
-    overflow: scroll;
-    margin: 0;
-    padding: 0;
+  text-align: center;
+  height: 100vh;
+  overflow: scroll;
+  margin: 0;
+  padding: 0;
 }
 
-@import "~bootstrap/scss/bootstrap";
+#inputErrorMsg {
+  // display: none;
+  color: $errorColor;
+}

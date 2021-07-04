@@ -2,6 +2,8 @@
 
 <h4>Change environment variables in client .env and in server .env</h4>
 
+<h2>To run this app open to terminals. One navigate to server add type node index.js, another navigate to client and type npm start</h2>
+
 <h4>I used Bootstrap for some components</h4>
 
 <h4>I used MongoDB for database</h4>
@@ -13,6 +15,8 @@
 Testing
 
 Deployment
+
+
 
 
 

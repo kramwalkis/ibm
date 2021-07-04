@@ -4,6 +4,8 @@ import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 
 function Articles({ articles }) {
+
+  //// Converts ISO format date to regular looking date
   function dateConverter(date) {
     const regularDate = new Date(date);
     const returnDate = `${regularDate.getFullYear()}-${
@@ -12,6 +14,7 @@ function Articles({ articles }) {
     return returnDate;
   }
 
+  //// Function that opens new tab and send data to back-end
   function cardWasClicked(article) {
     window.open(article.url, "_blank");
     fetch("/addSearchedArticle", {
@@ -22,9 +25,7 @@ function Articles({ articles }) {
       body: JSON.stringify(article),
     })
       .then((req) => req.json())
-      .then((data) => {
-        console.log(data);
-      });
+      .then((data) => {});
   }
 
   return (

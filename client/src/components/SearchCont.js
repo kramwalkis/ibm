@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
@@ -6,6 +6,7 @@ import Button from "react-bootstrap/Button";
 
 function SearchCont({ runClickLogic }) {
   const searchRef = useRef();
+  const [errorMsg, setErrMsg] = useState("");
 
   useEffect(() => {
     searchRef.current.focus();
@@ -16,7 +17,9 @@ function SearchCont({ runClickLogic }) {
   }
 
   function handleError() {
-    document.getElementById("inputErrorMsg").style.display = "block";
+    setErrMsg(
+      "Search query can only contain letters and numbers and must be max 40 characters length"
+    );
     runClickLogic([], "");
   }
 
@@ -37,13 +40,11 @@ function SearchCont({ runClickLogic }) {
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
+      .then(() => {});
   }
 
   function noErrorsOnClick(input) {
-    document.getElementById("inputErrorMsg").style.display = "none";
+    setErrMsg('')
     sendInputDataToDb(input);
     fetchFromClick(input);
   }
@@ -53,23 +54,24 @@ function SearchCont({ runClickLogic }) {
       `https://gnews.io/api/v4/search?q=${searchQuery}&max=9&token=${process.env.REACT_APP_GNEWS_KEY}`
     );
     const data = await request.json();
-    runClickLogic(
-      data.articles,
-      {
-        date: data.articles[data.articles.length - 1].publishedAt,
-      },
-      searchRef.current.value
-    );
+       
+    data.articles.length > 0
+      ? runClickLogic(
+          data.articles,
+          {
+            date: data.articles[data.articles.length - 1].publishedAt,
+          },
+          searchRef.current.value
+        )
+      : setErrMsg("No articles found");
   }
   return (
     <div className="searchCont mt-3">
-      <Form.Text id="inputErrorMsg">
-        Search can only contain letters and numbers and be max 40 character long
-      </Form.Text>
+      <Form.Text id="inputErrorMsg">{errorMsg}</Form.Text>
       <InputGroup>
-        <FormControl className="rounded" ref={searchRef}/>
-        <InputGroup.Append >
-          <Button            
+        <FormControl className="rounded" ref={searchRef} />
+        <InputGroup.Append>
+          <Button
             onClick={() => handleClick(searchRef.current.value)}
             variant="primary"
           >

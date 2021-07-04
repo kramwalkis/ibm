@@ -1,4 +1,5 @@
 const middleWare = {
+  //// Double checks search query validity
   searchQueryValidation: (req, res, next) => {
     middleWare.checkInputValidity(req.body.query)
       ? next()
@@ -8,6 +9,7 @@ const middleWare = {
     const pattern = /^[\w\d\s]+$/;
     return pattern.test(input.trim()) && input.length < 40 ? true : false;
   },
+  /// Checks if object contains all the same properties as from GNews.io
   checkArticleValidity: (req, res, next) => {
     req.body.title &&
     req.body.description &&

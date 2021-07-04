@@ -50,7 +50,7 @@ function SearchCont({ runClickLogic }) {
 
   async function fetchFromClick(searchQuery) {
     const request = await fetch(
-      `https://gnews.io/api/v4/search?q=${searchQuery}&max=9&token=f761bc3b88119973046aad53fa4bd099`
+      `https://gnews.io/api/v4/search?q=${searchQuery}&max=9&token=${process.env.REACT_APP_GNEWS_KEY}`
     );
     const data = await request.json();
     runClickLogic(

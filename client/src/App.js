@@ -5,6 +5,7 @@ import SearchCont from "./components/SearchCont";
 import Articles from "./components/Articles"
 
 function App() {  
+  console.log(process.env)
   const scrollRef = useRef();
   const [lastArticleDate, setLastArticleDate] = useState({ date: "" });
   const [articles, setArticles] = useState([]);
@@ -12,7 +13,7 @@ function App() {
 
   async function fetchFromScroll(searchQuery, date) {
     const request = await fetch(
-      `https://gnews.io/api/v4/search?q=${searchQuery}&max=10&to=${date.date}&token=f761bc3b88119973046aad53fa4bd099`
+      `https://gnews.io/api/v4/search?q=${searchQuery}&max=10&to=${date.date}&${process.env.REACT_APP_GNEWS_KEY}`
     );
     const data = await request.json();
     setLastArticleDate({
